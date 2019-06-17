@@ -1,4 +1,4 @@
-from project.explore import list_activities, get_1_acouphenometry, list_activities_one_user
+from project.explore import list_activities, get_1_acouphenometry, list_activities_one_user,freq_keepTheShape
 #d_activities, count_error = list_activities()
 
 #print(d_activities,count_error)
@@ -9,3 +9,6 @@ from project.explore import list_activities, get_1_acouphenometry, list_activiti
 d_activities, count_error = list_activities_one_user()
 
 print(d_activities,count_error)
+import matplotlib.pyplot as plt
+freq_keepTheShape(file="data/des.json",data='data/dsu.json')
+plt.show()

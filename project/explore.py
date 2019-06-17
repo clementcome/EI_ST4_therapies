@@ -1,5 +1,5 @@
 import json
-
+import matplotlib.pyplot as plt
 
 def list_activities(file="data/des.json"):
     with open(file) as input_file:
@@ -50,3 +50,41 @@ def list_activities_one_user(file="data/des.json"):
         except KeyError:
             count_error +=1
     return d_users, count_error
+
+def tinnituses_features(data='data/dsu.json'):
+    with open(data) as json_es:
+        abon = json.load(json_es)
+    tinnituse = []
+    count_error = 0
+    for user in abon :
+        try :
+            frequence = abon[user]["reducers"]["tinnituses"][0]["frequency"]
+            bandwidth = abon[user]["reducers"]["tinnituses"][0]["bandwidth"]
+            tinnituse.append((frequence, bandwidth,user))
+        except :
+            count_error += 1
+    return(tinnituse,count_error)
+
+def freq_keepTheShape(file="data/des.json",data='data/dsu.json'):
+    list=list_activities_one_user(file)[0]
+    frequence=tinnituses_features(data)
+    X=[]
+    Y=[]
+    count_error=0
+    for user in list:
+        try:
+            X.append([list[user]["keepTheShape"],user])
+        except KeyError:
+            count_error+=1
+    for freq in frequence[0]:
+        Y.append([freq[0],user])
+    for x in X:
+        for y in Y:
+            if x[1]==y[1]:
+                plt.scatter((x[0],y[0]))
+                print(x[0])
+    plt.show()
+
+
+#plot de fréquence d'utilisation (par jour) en fonction de la même chose pour une activité différente, présenté sous forme de matrice (bin avec saeborn)
+
