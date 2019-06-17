@@ -10,5 +10,5 @@ d_activities, count_error = list_activities_one_user()
 
 print(d_activities,count_error)
 import matplotlib.pyplot as plt
-freq_keepTheShape(file="data/des.json",data='data/dsu.json')
+freq_keepTheShape()
 plt.show()
