@@ -1,10 +1,9 @@
 from project.explore import list_activities, get_1_acouphenometry, list_activities_one_user,freq_keepTheShape
-#d_activities, count_error = list_activities()
+d_activities, count_error = list_activities()
 
-#print(d_activities,count_error)
-
-# data_acouphenometry = get_1_acouphenometry()
-# print(data_acouphenometry)
+print(d_activities,count_error)
+data_acouphenometry = get_1_acouphenometry()
+print(data_acouphenometry)
 
 d_activities, count_error = list_activities_one_user()
 
