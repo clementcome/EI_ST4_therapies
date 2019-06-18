@@ -6,7 +6,6 @@ def extract_activity_data(des_path="data/des.json",dsu_path="data/dsu.json",oupu
         d_users = json.load(input_file)
     with open(des_path) as input_file:
         d_events = json.load(input_file)
-    user_error = 0
     d_su = {}
     for userKey in d_users:
         try:
@@ -37,6 +36,8 @@ def extract_activity_data(des_path="data/des.json",dsu_path="data/dsu.json",oupu
                 d_es[eventKey]["data"]["duration"] = d_events[eventKey]["data"]["duration"]
             if "gameScore" in d_events[eventKey]["data"].keys():
                 d_es[eventKey]["data"]["gameScore"] = d_events[eventKey]["data"]["gameScore"]
+            if "uuid" in d_events[eventKey]["data"].keys():
+                d_es[eventKey]["data"]["uuid"] = d_events[eventKey]["data"]["uuid"]
             if "referrer" in d_events[eventKey]["data"].keys():
                 d_es[eventKey]["data"]["referrer"] = d_events[eventKey]["data"]["referrer"]
     d_activity = {"su":d_su,"es":d_es}
