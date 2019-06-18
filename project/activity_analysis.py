@@ -61,16 +61,65 @@ def connexions_date(ID,data):
         while index_activity < number_activities:
             if date_activities_completed[index_activity] < upper_bound :
                 number_connexion_days[i] += 1
-            elif :
+            else :
                 upper_bound += 3600*24
                 index_day += 1
             index_activity += 1
     return number_connexion_days
 
+def therapy_from_activity(activities_path = "data/activities.json"):
+    """
+    Return a dictionary with activity as keys and therapy as values
+    """
+    with open(activities_path) as input_file:
+        activities = json.load(input_file)
+    d_therapy = {}
+    for therapy in activities:
+        for activity in activities[therapy]:
+            d_therapy[activity["name"]] = therapy
+    return d_therapy
 
-
-
-
+def therapy_analysis(data_activity_path = "data/data_activity.json",
+    activities_path = "data/activities.json",
+    output_path = "data/therapyByUser.json"):
+    """
+    Create a json file with this format : {user:{therapyName:{activity:[date]}}}
+    """
+    with open(data_activity_path) as data_activity_file:
+        data_activity = json.load(data_activity_file)
+    with open(activities_path) as activities_file:
+        activities = json.load(activities_file)
+    su = data_activity["su"]
+    es = data_activity["es"]
+    therapy_activity = therapy_from_activity()
+    therapies = set(therapy_activity.values())
+    data_user = {}
+    data_therapy = {}
+    for eventKey in es:
+        event = es[eventKey]
+        if "type" in event.keys():
+            if event["type"] == "ACTIVITY_COMPLETE":
+                if "userKey" in event.keys():
+                    userKey = event["userKey"]
+                    if "activity" in event["data"].keys():
+                        acti = {"activity":event["data"]["activity"],"date":event["date"]}
+                        if userKey in data_user.keys():
+                            data_user[userKey].append(acti)
+                        else:
+                            data_user[userKey] = [acti]
+    for user in data_user:
+        data_therapy[user] = {therapy :{} for therapy in therapies}
+        for acti in data_user[user]:
+            acti_name = acti["activity"]
+            acti_date = acti["date"]
+            if acti_name in therapy_activity.keys():
+                therapy = therapy_activity[acti_name]
+                if acti_name in data_therapy[user][therapy].keys():
+                    data_therapy[user][therapy][acti_name].append(acti_date)
+                else:
+                    data_therapy[user][therapy][acti_name] = [acti_date]
+    with open(output_path,'w') as output_file:
+        json.dump(data_therapy,output_file)
 
 
 
