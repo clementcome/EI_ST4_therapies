@@ -1,5 +1,6 @@
 from project.explore import list_activities, get_1_acouphenometry, get_trajectories_acouphenometry
 from project.visu import display_1_acouphenometry, display_trajectory
+from project.extract import extract_activity_data
 
 # d_activities, count_error = list_activities()
 
@@ -12,4 +13,5 @@ from project.visu import display_1_acouphenometry, display_trajectory
 
 # get_trajectories_acouphenometry()
 
-display_trajectory(112)
+# display_trajectory(200)
+extract_activity_data()

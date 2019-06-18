@@ -10,7 +10,7 @@ def display_1_acouphenometry():
     q = [point["q"] for point in points]
     plt.plot(q,f)
     plt.scatter(q[-1],f[-1],c="red",s=100)
-    plt.xlim(0,1)
+    plt.xlim(1,0)
     plt.ylim(0,1)
     plt.axis("equal")
     plt.show()
@@ -28,6 +28,6 @@ def display_trajectory(i=1,file = "data/dtrajectories.json"):
     q = [point["q"] for point in points]
     plt.plot(q,f)
     plt.scatter(q[-1],f[-1],c="red",s=100)
-    plt.xlim(0,1)
+    plt.xlim(1,0)
     plt.ylim(0,1)
     plt.show()
