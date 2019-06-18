@@ -14,8 +14,8 @@ print(data_acouphenometry)'''
 '''
 d_activities, count_error = list_activities_one_user()
 
-print(d_activities,count_error)'''
-
+print(d_activities,count_error)
+'''
 '''
 freq_keepTheShape()
 plt.show()'''
@@ -30,3 +30,4 @@ print(plot_two_activities()[0],plot_two_activities()[1])
 plt.show()'''
 
 sns.pairplot(plot_all_activities())
+plt.show()

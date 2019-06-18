@@ -144,20 +144,23 @@ def plot_all_activities(file="data/des.json"): #liste des utilisateurs qui ont f
     list_act=[activity for activity in list_activities()[0].keys()]
     list_activities_one_user=list_activities_one_user_corr()[0]
 
-    users=[]#liste des utilisateurs qui ont fait toutes les activités
-    for user in list_activities_one_user.keys():
-        if all(activity in list_activities_one_user[user].keys() for activity in list_act):
-                users.append(user)
+    users=[x for x in list_activities_one_user.keys()]#liste des utilisateurs qui ont fait toutes les activité. En fait non #Aucun utilisateur n'a fait toutes les activités
+
     plot={}
 
     for activity in list_act:
-        nb=[]
+        nb=[0]*len(users)
         print (users)
-        for user in users:
-            nb.append(list_activities_one_user[user][activity])
-            print(list_activities_one_user[user][activity])
-        #print(nb)
-        plot[activity]=[nb for nb in list_activities_one_user]
+        count_error=0
+        for k,user in enumerate(users):
+            try:
+                nb[k]=list_activities_one_user[user][activity]
+            except KeyError:
+                count_error +=1
+            #print(list_activities_one_user[user][activity])
+        print(nb)
+        plot[activity]=nb
+    print("count_error ",count_error)
+    print(pandas.DataFrame(plot))
     return pandas.DataFrame(plot)
 
-#Aucun utilisateur n'a fait toutes les activités
