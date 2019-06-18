@@ -1,5 +1,6 @@
 import json
 import matplotlib.pyplot as plt
+import pandas
 
 def list_activities(file="data/des.json"):
     with open(file) as input_file:
@@ -51,6 +52,31 @@ def list_activities_one_user(file="data/des.json"):
             count_error +=1
     return d_users, count_error
 
+def list_activities_one_user_corr(file="data/des.json"): #Version corrigée qui ne prend pas en compte "guidedTour"
+    with open(file) as input_file:
+        data = json.load(input_file)
+    d_users = {}
+    count_error = 0
+    for key in data.keys():
+        try:
+            user = data[key]["userKey"]
+            activity = data[key]["data"]["activity"]
+            type=data[key]["data"]["referrer"]["type"]
+            if type != "guidedTour":
+                if user in d_users.keys():
+                    #d_activities=d_users[user]
+                    if activity in d_users[user].keys(): #activities.key dans list_activities
+                        d_users[user][activity] += 1
+                    else:
+                        d_users[user][activity] = 1
+                else:
+                    d_users[user]={}
+                    #d_activities=d_users[user]
+                    d_users[user][activity] = 1
+        except KeyError:
+                count_error +=1
+    return d_users, count_error
+
 def tinnituses_features(data='data/dsu.json'):
     with open(data) as json_es:
         abon = json.load(json_es)
@@ -95,7 +121,43 @@ def freq_keepTheShape(file="data/des.json",data='data/dsu.json'): # Ne renvoie r
 #'keepTheShape': 6409, et 'toyFactory'
 
 #Qui sont les gens qui ont fait  les deux?
+#Dans le comptage des activités, certaines étaient obligatoires quand il y avait une visite guidée donc il ne faut pas
+# compter les [data][referrer][type]= "guidedTour"
 
 
-def two_activities(file="data/des.json"):
-    list_activities_one_user(f)
+def plot_two_activities(file="data/des.json"): #liste des utilisateurs qui ont fait les deux activités 'keepTheShape': 6409, et 'toyFactory'
+    list=list_activities_one_user_corr(file)[0]
+    users=[]#liste des utilisateurs qui ont fait les deux activités 'keepTheShape': 6409, et 'toyFactory'
+    for user in list.keys():
+        if 'keepTheShape'in list[user].keys() and 'toyFactory' in list[user].keys():
+            users.append(user)
+    X=[]
+    Y=[]
+    for user in users:
+        X.append(list[user]["keepTheShape"])
+        Y.append(list[user]["toyFactory"])
+    return X,Y
+
+#Pour faire la matrix plot. Il faut un data frame : en colonne les activités (clef du dict), en ligne les observations (un utilisateur, liste de valeurs)
+
+def plot_all_activities(file="data/des.json"): #liste des utilisateurs qui ont fait les deux activités 'keepTheShape': 6409, et 'toyFactory'
+    list_act=[activity for activity in list_activities()[0].keys()]
+    list_activities_one_user=list_activities_one_user_corr()[0]
+
+    users=[]#liste des utilisateurs qui ont fait toutes les activités
+    for user in list_activities_one_user.keys():
+        if all(activity in list_activities_one_user[user].keys() for activity in list_act):
+                users.append(user)
+    plot={}
+
+    for activity in list_act:
+        nb=[]
+        print (users)
+        for user in users:
+            nb.append(list_activities_one_user[user][activity])
+            print(list_activities_one_user[user][activity])
+        #print(nb)
+        plot[activity]=[nb for nb in list_activities_one_user]
+    return pandas.DataFrame(plot)
+
+#Aucun utilisateur n'a fait toutes les activités
