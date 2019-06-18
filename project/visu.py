@@ -1,5 +1,7 @@
 import json
+import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from project.explore import get_1_acouphenometry
 
@@ -30,4 +32,25 @@ def display_trajectory(i=1,file = "data/dtrajectories.json"):
     plt.scatter(q[-1],f[-1],c="red",s=100)
     plt.xlim(1,0)
     plt.ylim(0,1)
+    plt.show()
+
+def display_therapy(i=0, therapy_path = "data/therapyByUser.json"):
+    with open(therapy_path) as input_file:
+        d_therapy = json.load(input_file)
+    user = list(d_therapy.keys())[i]
+    activity_user = {"therapy":[],"activity":[],"count":[]}
+    for therapy in d_therapy[user]:
+        for activity in d_therapy[user][therapy]:
+            activity_user["therapy"].append(therapy)
+            activity_user["activity"].append(activity)
+            activity_user["count"].append(len(d_therapy[user][therapy][activity]))
+    df_acti = pd.DataFrame(activity_user)
+    colors = {"trt":"#ff0000",
+    "cbt":"#fffa00",
+    "relaxation":"#00ff0c",
+    "residualInhibition":"#00ffe5",
+    "knowledge":"#0015ff",
+    "questionnaire":"#ff00f6"}
+    color_serie = [colors[therapy] for therapy in df_acti["therapy"]]
+    plt.bar(df_acti["activity"],df_acti["count"],color=color_serie)
     plt.show()
