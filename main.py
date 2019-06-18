@@ -1,4 +1,4 @@
-from project.explore import list_activities, get_1_acouphenometry, list_activities_one_user,freq_keepTheShape, plot_two_activities, plot_all_activities
+from project.explore import list_activities, get_1_acouphenometry, list_activities_one_user,freq_keepTheShape, plot_two_activities, plot_all_activities, plot_diag
 d_activities, count_error = list_activities()
 
 import seaborn as sns
@@ -29,5 +29,22 @@ plt.yscale('log')
 print(plot_two_activities()[0],plot_two_activities()[1])
 plt.show()'''
 
-sns.pairplot(plot_all_activities())
+
+matrixplot=sns.pairplot(plot_all_activities())
+#diagplot=sns.pairplot(plot_diag())
+
+
+plt.plot([0,200],[0,200], color="red")
+for i in range(0, len(matrixplot.axes)):
+            for j in range(0, len(matrixplot.axes)):
+                matrixplot.axes[i,j].set(xscale='log', yscale='log')   #, xlim=(1,200), ylim=(1,200))
+
+#plt.savefig("/Users/maximeculot/Downloads/figure.png",dpi=500)
+plt.savefig("/Users/maximeculot/Downloads/figure.png")
+
+
+#diagplot=sns.pairplot(plot_diag())
+# for i in range(0,len(diagplot.axes)):
+#     for j in range(0,len(diagplot.axes)):
+#         diagplot.axes[i,j].set
 plt.show()

@@ -1,6 +1,7 @@
 import json
 import matplotlib.pyplot as plt
 import pandas
+import numpy as np
 
 def list_activities(file="data/des.json"):
     with open(file) as input_file:
@@ -150,7 +151,7 @@ def plot_all_activities(file="data/des.json"): #liste des utilisateurs qui ont f
 
     for activity in list_act:
         nb=[0]*len(users)
-        print (users)
+        #print (users)
         count_error=0
         for k,user in enumerate(users):
             try:
@@ -158,9 +159,15 @@ def plot_all_activities(file="data/des.json"): #liste des utilisateurs qui ont f
             except KeyError:
                 count_error +=1
             #print(list_activities_one_user[user][activity])
-        print(nb)
+        #print(nb)
         plot[activity]=nb
-    print("count_error ",count_error)
-    print(pandas.DataFrame(plot))
+    #print("count_error ",count_error)
+    #print(pandas.DataFrame(plot))
     return pandas.DataFrame(plot)
 
+def plot_diag():
+    list_act=[activity for activity in list_activities()[0].keys()]
+    plot={}
+    for activity in list_act:
+        plot[activity]=np.linspace(0,180,100)
+    return pandas.DataFrame(plot)
