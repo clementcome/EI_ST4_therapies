@@ -1,9 +1,6 @@
 import json
-import datetime
-import time
 import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
+
 
 def tinnituses_features(data):
     with open(data) as json_es:

@@ -1,6 +1,13 @@
+from project.explore import list_activities, get_1_acouphenometry, get_trajectories_acouphenometry
+from project.visu import display_1_acouphenometry, display_trajectory
+from project.extract import extract_activity_data
+from project.activity_analysis import therapy_analysis
+
+# d_activities, count_error = list_activities()
 from project.explore import list_activities, get_1_acouphenometry, list_activities_one_user,freq_keepTheShape, plot_two_activities, plot_all_activities, plot_diag
 d_activities, count_error = list_activities()
 
+# print(d_activities,count_error)
 import seaborn as sns
 
 import matplotlib.pyplot as  plt
@@ -42,6 +49,17 @@ for i in range(0, len(matrixplot.axes)):
 #plt.savefig("/Users/maximeculot/Downloads/figure.png",dpi=500)
 plt.savefig("/Users/maximeculot/Downloads/figure.png")
 
+# data_acouphenometry = get_1_acouphenometry()
+# print(data_acouphenometry["data"].keys())
+
+# display_1_acouphenometry()
+
+# get_trajectories_acouphenometry()
+
+# display_trajectory(200)
+# extract_activity_data()
+
+therapy_analysis()
 
 #diagplot=sns.pairplot(plot_diag())
 # for i in range(0,len(diagplot.axes)):
