@@ -3,3 +3,6 @@ data/dsu.json
 data/duserdate.json
 essai.py
 __pycache__
+
+data/
+__pycache__
