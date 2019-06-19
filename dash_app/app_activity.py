@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
@@ -10,14 +11,8 @@ from project.extract import dataframe_from_therapy, use_frequencies
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app_activity = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+df_frequency = pd.DataFrame(json.load(open("data/data_frequency.json")))
 
-d_therapy = json.load(open("data/therapyByUser.json"))
-d_count = {}
-for user in d_therapy:
-    d_count[user] = {}
-    for therapy in d_therapy[user]:
-        for activity in d_therapy[user][therapy]:
-            d_count[user][activity] = len(d_therapy[user][therapy][activity])
 activities = {
     "theIsland":"L'ile",
     "constellations":"Constellations",
@@ -83,16 +78,17 @@ app_activity.layout = html.Div([
     ]
 )
 def update_graph(selected_x,selected_y,scale_values):
-    x = []
-    y = []
-    droite = go.Scatter(x=[1,200],y=[1,200],mode="lines")
-    for user in d_count:
-        if (selected_x in d_count[user].keys()) and (selected_y in d_count[user].keys()):
-            x.append(d_count[user][selected_x])
-            y.append(d_count[user][selected_y])
+    x = df_frequency[df_frequency["activity"] == selected_x]["frequency"]
+    y = df_frequency[df_frequency["activity"] == selected_y]["frequency"]
 
-    data = [go.Scatter(x=x,y=y,mode="markers"),droite]
-    layout = go.Layout(height=400,xaxis={"title":activities[selected_x]},
+    # droite = go.Scatter(x=[1,200],y=[1,200],mode="lines")
+    # for user in d_count:
+    #     if (selected_x in d_count[user].keys()) and (selected_y in d_count[user].keys()):
+    #         x.append(d_count[user][selected_x])
+    #         y.append(d_count[user][selected_y])
+
+    data = [go.Scatter(x=x,y=y,mode="markers")]
+    layout = go.Layout(height=700,xaxis={"title":activities[selected_x]},
         yaxis={"title":activities[selected_y], "scaleanchor":"x"})
     if "log" in scale_values:
         layout.yaxis.type = "log"

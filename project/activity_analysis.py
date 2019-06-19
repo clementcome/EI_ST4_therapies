@@ -89,6 +89,8 @@ def therapy_analysis(data_activity_path = "data/data_activity.json",
     with open(data_activity_path) as data_activity_file:
         data_activity = json.load(data_activity_file)
     es = data_activity["es"]
+    su = data_activity["su"]
+    li_su = list(su.keys())
     therapy_activity = therapy_from_activity()
     therapies = set(therapy_activity.values())
     data_user = {}      # a first dictionary to get all the activities done by a user
@@ -96,6 +98,9 @@ def therapy_analysis(data_activity_path = "data/data_activity.json",
     events_by_uuid = {}
     for eventKey in es:
         event = es[eventKey]
+        if "userKey" in event.keys():
+            if event["userKey"] not in li_su:
+                continue
         if "type" in event.keys():
             if "ACTIVITY" in event["type"]:
                 if "uuid" in event["data"].keys():

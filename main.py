@@ -2,7 +2,7 @@ from project.explore import list_activities, get_1_acouphenometry, get_trajector
 from project.visu import display_1_acouphenometry, display_trajectory, display_therapy
 from project.visu import display_therapy_used, display_therapy_per_user_3d, display_corr_activities
 from project.visu import programs_status, display_corr_principal_users
-from project.extract import extract_activity_data
+from project.extract import extract_activity_data, use_frequencies
 from project.activity_analysis import therapy_analysis
 from project.cluster import pca_kmeans_activities, pca_therapy_activities, pca_kmeans_users, tsne_kmeans_users
 
@@ -35,6 +35,8 @@ from project.cluster import pca_kmeans_activities, pca_therapy_activities, pca_k
 # tsne_kmeans_users()
 
 # programs_status()
+
+# use_frequencies()
 
 
 from dash_app import app_therapy,app_activity

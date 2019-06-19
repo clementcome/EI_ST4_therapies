@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+from datetime import datetime
 
 def extract_activity_data(des_path="data/des.json",dsu_path="data/dsu.json",ouput_path="data/data_activity.json"):
     d_activity = {}
@@ -82,27 +83,45 @@ def detect_change_activity(df):
         resu.append(n)
     return resu
 
+def dict_days_activity(timestamps):
+    """
+    For an activity, given its timestamps: it returns for each day how many times
+    the user did this activity
+    """
+    d = {}
+    for timestamp in timestamps:
+        date = datetime.fromtimestamp(timestamp).date()
+        if date in d.keys():
+            d[date] += 1
+        else:
+            d[date] = 1
+    return d
+
 def frequencies_from_dataframe(df):
     """
-    Return frequencies associated to each activity and user
+    Return frequencies associated to each activity and user difference with the previous one is
+    we count for each day how many times a user did each activity
     returns dict: keys are row indices and values are median frequencies
     """
     changes = detect_change_activity(df)
     d_frequency = {}
     for i in range(len(changes)-1):
         start, end = changes[i], changes[i+1]-1
-        if end - start > 1:
-            time_sorted = df["time"].iloc[start:end].sort_values(ascending=False)
-            time_sorted = list(time_sorted)
-            time_differencies = [(time_sorted[i]-time_sorted[i+1]) for i in range(len(time_sorted)-1)]
-            time_differencies.sort()
-            median = time_differencies[len(time_differencies) // 2]
-            d_frequency[start]= median/86400
+        timestamps = df["time"].iloc[start:end]
+        d_days = dict_days_activity(timestamps)
+        try:
+            max_day = max(d_days.keys())
+            min_day = min(d_days.keys())
+            if max_day != min_day:
+                mean = sum(d_days.values())/(max_day-min_day).days
+                d_frequency[start]= mean
+        except:
+            pass
     return d_frequency
 
-def use_frequencies(df,ouput_path="data/data_frequency.json"):
+def use_frequencies(df= dataframe_from_therapy(),ouput_path="data/data_frequency.json"):
     """
-    Return a dataframe with giving frequencies by activity, therapy and user
+    Return a dataframe giving frequencies by activity, therapy and user
     """
     d_frequency_row = frequencies_from_dataframe(df)
     d_frequency = {"user":[],"therapy":[],"activity":[],"frequency":[]}
