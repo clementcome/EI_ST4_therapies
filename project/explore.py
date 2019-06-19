@@ -165,6 +165,34 @@ def plot_all_activities(file="data/des.json"): #liste des utilisateurs qui ont f
     #print(pandas.DataFrame(plot))
     return pandas.DataFrame(plot)
 
+
+def corr_all_activities(): #liste des utilisateurs qui ont fait les deux activités 'keepTheShape': 6409, et 'toyFactory'
+    list_act=[activity for activity in list_activities()[0].keys()]
+    list_activities_one_user=list_activities_one_user_corr()[0]
+
+    users=[x for x in list_activities_one_user.keys()]#liste des utilisateurs qui ont fait toutes les activité. En fait non #Aucun utilisateur n'a fait toutes les activités
+
+    plot={}
+
+    for activity in list_act:
+        nb=[0]*len(users)
+        #print (users)
+        count_error=0
+        for k,user in enumerate(users):
+            try:
+                nb[k]=list_activities_one_user[user][activity]
+            except KeyError:
+                count_error +=1
+            #print(list_activities_one_user[user][activity])
+        #print(nb)
+        plot[activity]=nb
+    #print("count_error ",count_error)
+    #print(pandas.DataFrame(plot))
+    corr=((pandas.DataFrame(plot)).corr())
+    plt.matshow(corr)
+    corr.style.background_gradient(cmap='coolwarm').set_precision(2)
+
+
 def plot_diag():
     list_act=[activity for activity in list_activities()[0].keys()]
     plot={}

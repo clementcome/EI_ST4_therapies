@@ -17,8 +17,11 @@ def score(file="data/data_activity.json"):
                 # print(data[des])
                 # print(data[des]["userKey"])
                 # print(users)
-                users[data[des]["userKey"]]=[]  #Liste qui contiendra les score et leur date
-                users[data[des]["userKey"]].append([data[des]["data"]["gameScore"],(data[des]["date"])])
+                try:
+                    users[data[des]["userKey"]]=[]  #Liste qui contiendra les score et leur date
+                    users[data[des]["userKey"]].append([data[des]["data"]["gameScore"],(data[des]["date"])])
+                except:
+                    pass
             else:
                 users[data[des]["userKey"]].append([data[des]["data"]["gameScore"],(data[des]["date"])])
     return users
