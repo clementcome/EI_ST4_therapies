@@ -37,3 +37,6 @@ def score(file="data/data_activity.json",ouput_path="data/scores_successifs.json
     return activities
 
 #print (score())
+
+#On peut tracer, pour chaque utilisateur le score en fonction du temps pour les activités, le score moyen en fonction du temps de tous les utilisateurs
+

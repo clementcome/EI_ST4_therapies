@@ -12,6 +12,7 @@ import seaborn as sns
 
 import matplotlib.pyplot as  plt
 
+
 '''
 print(d_activities,count_error)
 data_acouphenometry = get_1_acouphenometry()
@@ -72,3 +73,14 @@ plt.show()'''
 
 # corr_all_activities()
 # plt.show()
+
+#from dash_app.app_activity import app_activity
+#
+#app_activity.run_server(debug=True)
+
+#from project.activity_analysis import therapy_analysis
+#therapy_analysis()
+
+
+from project.extract import use_frequencies
+use_frequencies()

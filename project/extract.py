@@ -100,7 +100,7 @@ def frequencies_from_dataframe(df):
             d_frequency[start]= median/86400
     return d_frequency
 
-def use_frequencies(df,ouput_path="data/data_frequency.json"):
+def use_frequencies(df=dataframe_from_therapy(),ouput_path="data/data_frequency.json"):
     """
     Return a dataframe with giving frequencies by activity, therapy and user
     """
