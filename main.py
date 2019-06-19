@@ -68,7 +68,7 @@ plt.show()'''
 
 #therapy_analysis()
 
-print (score())
+#print (score())
 
 # corr_all_activities()
 # plt.show()
