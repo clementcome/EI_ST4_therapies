@@ -7,5 +7,10 @@ __pycache__
 =========
 essai.py
 __pycache__
+*.html
+.idea/
+.ipynb_checkpoints/
+Notebook_EI.ipynb
+
 >>>>>>>>> Temporary merge branch 2
 

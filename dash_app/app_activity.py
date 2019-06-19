@@ -5,6 +5,8 @@ import dash_core_components as dcc
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 
+from project.extract import dataframe_from_therapy, use_frequencies
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app_activity = dash.Dash(__name__, external_stylesheets=external_stylesheets)
