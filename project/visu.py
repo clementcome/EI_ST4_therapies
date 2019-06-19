@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.offline as py
@@ -120,3 +121,82 @@ def display_corr_activities(therapy_filepath="data/therapyByUser.json"):
     # corr.style.background_gradient(cmap="coolwarm",axis=None)
     data = [go.Heatmap(z=corr,x=corr.columns,y=corr.index)]
     py.plot(data)
+
+def display_corr_principal_users(therapy_filepath="data/therapyByUser.json"):
+    d_therapy = json.load(open(therapy_filepath))
+    d_count = {}
+    for user in d_therapy:
+        d_count[user] = {}
+        for therapy in d_therapy[user]:
+            for activity in d_therapy[user][therapy]:
+                d_count[user][activity] = len(d_therapy[user][therapy][activity])
+    df = pd.DataFrame(d_count).transpose()
+    cols_to_keep = []
+    for col in df.columns:
+        if df[col].count()>250:
+            cols_to_keep.append(col)
+    df= df[cols_to_keep].dropna().transpose()
+    corr = df.corr()
+    # corr.style.background_gradient(cmap="coolwarm",axis=None)
+    data = [go.Heatmap(z=corr,x=corr.columns,y=corr.index)]
+    py.plot(data)
+
+#des[type] = “PROGRAM_” + START, CANCEL, COMPLETE + (des[data][referrer][program] + des[data][referrer][type] where des[type] = “ACTIVITY_START”)
+def programs_status(file="data/des.json"):
+   with open(file) as input_file:
+       data = json.load(input_file)
+   comptage={}
+   programmes = ["improveMood", "reduceStress", "improveConcentration", "improveSleep"]
+   types = ['PROGRAM_START', 'PROGRAM_CANCEL', 'PROGRAM_COMPLETE']
+   comptage['PROGRAM_START'] = {}
+   comptage['PROGRAM_CANCEL'] = {}
+   comptage['PROGRAM_COMPLETE'] = {}
+
+   for programme in programmes :
+       comptage['PROGRAM_START'][programme]=0
+       comptage['PROGRAM_CANCEL'][programme]=0
+       comptage['PROGRAM_COMPLETE'][programme]=0
+
+   for utilisateur in data.keys():
+       #print(data[utilisateur])
+       try:
+           prog = data[utilisateur]["data"]["program"]
+           type = data[utilisateur]["type"]
+           if type in types and prog in programmes:
+               comptage[type][prog] += 1
+
+       except KeyError:
+           pass
+   valStart = [comptage['PROGRAM_START'][i] for i in programmes]
+   valCancel = [comptage['PROGRAM_CANCEL'][i] for i in programmes]
+   valComplete = [comptage['PROGRAM_COMPLETE'][i] for i in programmes]
+
+   # create plot
+   fig, ax = plt.subplots()
+   index = np.arange(4)
+   bar_width = 0.25
+   opacity = 0.8
+
+   rects1 = plt.bar(index, valStart, bar_width,
+   alpha=opacity,
+   color='b',
+   label='START')
+
+   rects2 = plt.bar(index + bar_width, valCancel, bar_width,
+   alpha=opacity,
+   color='g',
+   label='CANCEL')
+
+   rects3 = plt.bar(index + bar_width*2, valComplete, bar_width,
+   alpha=opacity,
+   color='r',
+   label='COMPLETE')
+
+   plt.xlabel('Programme')
+   plt.ylabel('Nombre d'+"'"+'utilisateurs')
+   plt.title('Utilisation des programmes')
+   plt.xticks(index + bar_width, ('improveMood', 'reduceStress', 'improveConcentration', 'improveSleep'))
+   plt.legend()
+
+   plt.tight_layout()
+   plt.show()
