@@ -2,7 +2,7 @@ from project.explore import list_activities, get_1_acouphenometry, get_trajector
 from project.visu import display_1_acouphenometry, display_trajectory
 from project.extract import extract_activity_data
 from project.activity_analysis import therapy_analysis
-#from project.scores_successifs import score
+from project.scores_successifs import score
 # d_activities, count_error = list_activities()
 from project.explore import list_activities, get_1_acouphenometry, list_activities_one_user,freq_keepTheShape, plot_two_activities, plot_all_activities, plot_diag
 d_activities, count_error = list_activities()
@@ -68,7 +68,7 @@ plt.show()'''
 
 #therapy_analysis()
 
-#print (score())
+print (score())
 
-corr_all_activities()
-plt.show()
+# corr_all_activities()
+# plt.show()
