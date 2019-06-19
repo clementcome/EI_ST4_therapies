@@ -84,29 +84,44 @@ def therapy_analysis(data_activity_path = "data/data_activity.json",
     output_path = "data/therapyByUser.json"):
     """
     Create a json file with this format : {user:{therapyName:{activity:[date]}}}
+    Keeps only the activities not done during the guided tour.
     """
     with open(data_activity_path) as data_activity_file:
         data_activity = json.load(data_activity_file)
-    with open(activities_path) as activities_file:
-        activities = json.load(activities_file)
-    su = data_activity["su"]
     es = data_activity["es"]
     therapy_activity = therapy_from_activity()
     therapies = set(therapy_activity.values())
-    data_user = {}
+    data_user = {}      # a first dictionary to get all the activities done by a user
     data_therapy = {}
+    events_by_uuid = {}
     for eventKey in es:
         event = es[eventKey]
         if "type" in event.keys():
-            if event["type"] == "ACTIVITY_COMPLETE":
-                if "userKey" in event.keys():
-                    userKey = event["userKey"]
-                    if "activity" in event["data"].keys():
-                        acti = {"activity":event["data"]["activity"],"date":event["date"]}
-                        if userKey in data_user.keys():
-                            data_user[userKey].append(acti)
-                        else:
-                            data_user[userKey] = [acti]
+            if "ACTIVITY" in event["type"]:
+                if "uuid" in event["data"].keys():
+                    uuid = event["data"]["uuid"]
+                    if uuid in events_by_uuid.keys():
+                        events_by_uuid[uuid][event["type"]] = event
+                    else:
+                        events_by_uuid[uuid] = {event["type"]: event}
+    for uuid in events_by_uuid:
+        events = events_by_uuid[uuid]
+        if "ACTIVITY_START" in events.keys():
+            start_event = events["ACTIVITY_START"]
+            if "referrer" in start_event["data"].keys():
+                referrer = start_event["data"]["referrer"]
+                if "name" in referrer.keys() and referrer["name"] == "guidedTour":
+                    continue
+                if "ACTIVITY_COMPLETE" in events.keys():
+                    event = events["ACTIVITY_COMPLETE"]
+                    if "userKey" in event.keys():
+                        userKey = event["userKey"]
+                        if "activity" in event["data"].keys():
+                            acti = {"activity":event["data"]["activity"],"date":event["date"]}
+                            if userKey in data_user.keys():
+                                data_user[userKey].append(acti)
+                            else:
+                                data_user[userKey] = [acti]
     for user in data_user:
         data_therapy[user] = {therapy :{} for therapy in therapies}
         for acti in data_user[user]:
