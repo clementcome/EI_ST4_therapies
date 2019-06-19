@@ -1,5 +1,6 @@
 from project.explore import list_activities, get_1_acouphenometry, get_trajectories_acouphenometry
 from project.visu import display_1_acouphenometry, display_trajectory, display_therapy
+from project.visu import display_therapy_used, display_therapy_per_user_3d
 from project.extract import extract_activity_data
 from project.activity_analysis import therapy_analysis
 
@@ -18,4 +19,12 @@ from project.activity_analysis import therapy_analysis
 # extract_activity_data()
 
 # therapy_analysis()
-display_therapy(1)
+# display_therapy(5)
+# display_therapy_used()
+# display_therapy_per_user_3d()
+
+
+from dash_app import app_therapy,app_activity
+
+# app_therapy.run_server(debug=True)
+app_activity.run_server(debug=True)
