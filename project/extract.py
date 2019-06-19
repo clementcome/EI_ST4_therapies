@@ -29,6 +29,8 @@ def extract_activity_data(des_path="data/des.json",dsu_path="data/dsu.json",oupu
     for eventKey in d_events}
 
     for eventKey in d_events:
+        if "score" in d_events[eventKey].keys():
+            d_es[eventKey]["score"] = d_events[eventKey]["score"]
         if "data" in d_events[eventKey].keys():
             if "activity" in d_events[eventKey]["data"].keys():
                 d_es[eventKey]["data"]["activity"] = d_events[eventKey]["data"]["activity"]

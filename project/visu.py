@@ -106,3 +106,17 @@ def display_therapy_per_user_3d(therapy_filepath="data/therapyByUser.json"):
         "aspectmode":"cube"
     })
     py.plot({"data":data,"layout":layout})
+
+def display_corr_activities(therapy_filepath="data/therapyByUser.json"):
+    d_therapy = json.load(open(therapy_filepath))
+    d_count = {}
+    for user in d_therapy:
+        d_count[user] = {}
+        for therapy in d_therapy[user]:
+            for activity in d_therapy[user][therapy]:
+                d_count[user][activity] = len(d_therapy[user][therapy][activity])
+    df = pd.DataFrame(d_count).transpose()
+    corr = df.corr()
+    # corr.style.background_gradient(cmap="coolwarm",axis=None)
+    data = [go.Heatmap(z=corr,x=corr.columns,y=corr.index)]
+    py.plot(data)
