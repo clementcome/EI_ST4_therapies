@@ -8,3 +8,5 @@ data/
 __pycache__
 *.html
 .idea/
+.ipynb_checkpoints/
+Notebook_EI.ipynb
