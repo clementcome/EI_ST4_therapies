@@ -10,3 +10,4 @@ __pycache__
 .idea/
 .ipynb_checkpoints/
 Notebook_EI.ipynb
+visualizations/

@@ -8,6 +8,7 @@ import plotly.graph_objs as go
 
 from project.explore import get_1_acouphenometry
 from project.activity_analysis import therapy_from_activity
+from project.extract import dataframe_activity_frequency
 
 def display_1_acouphenometry():
     data_acouphenometry = get_1_acouphenometry()
@@ -108,38 +109,20 @@ def display_therapy_per_user_3d(therapy_filepath="data/therapyByUser.json"):
     })
     py.plot({"data":data,"layout":layout})
 
-def display_corr_activities(therapy_filepath="data/therapyByUser.json"):
-    d_therapy = json.load(open(therapy_filepath))
-    d_count = {}
-    for user in d_therapy:
-        d_count[user] = {}
-        for therapy in d_therapy[user]:
-            for activity in d_therapy[user][therapy]:
-                d_count[user][activity] = len(d_therapy[user][therapy][activity])
-    df = pd.DataFrame(d_count).transpose()
+def display_corr_activities(frequency_path="data/data_frequency.json"):
+    df = dataframe_activity_frequency()
     corr = df.corr()
     # corr.style.background_gradient(cmap="coolwarm",axis=None)
     data = [go.Heatmap(z=corr,x=corr.columns,y=corr.index)]
     py.plot(data)
 
-def display_corr_principal_users(therapy_filepath="data/therapyByUser.json"):
-    d_therapy = json.load(open(therapy_filepath))
-    d_count = {}
-    for user in d_therapy:
-        d_count[user] = {}
-        for therapy in d_therapy[user]:
-            for activity in d_therapy[user][therapy]:
-                d_count[user][activity] = len(d_therapy[user][therapy][activity])
-    df = pd.DataFrame(d_count).transpose()
-    cols_to_keep = []
-    for col in df.columns:
-        if df[col].count()>250:
-            cols_to_keep.append(col)
-    df= df[cols_to_keep].dropna().transpose()
+def display_corr_principal_users(frequency_path="data/data_frequency.json"):
+    df = dataframe_activity_frequency().transpose()
     corr = df.corr()
     # corr.style.background_gradient(cmap="coolwarm",axis=None)
     data = [go.Heatmap(z=corr,x=corr.columns,y=corr.index)]
-    py.plot(data)
+    layout = go.Layout(title="Matrice de corrélation des utilisateurs en fonction de leurs utilisations des activités")
+    py.plot({"data":data,"layout":layout})
 
 #des[type] = “PROGRAM_” + START, CANCEL, COMPLETE + (des[data][referrer][program] + des[data][referrer][type] where des[type] = “ACTIVITY_START”)
 def programs_status(file="data/des.json"):

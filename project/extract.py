@@ -135,3 +135,26 @@ def use_frequencies(df= dataframe_from_therapy(),ouput_path="data/data_frequency
         json.dump(d_frequency, output_file)
     df_frequency = pd.DataFrame(d_frequency)
     return df_frequency
+
+def dataframe_activity_frequency(frequency_path="data/data_frequency.json"):
+    d_freq = json.load(open(frequency_path))
+    d_activity = {}
+    users = d_freq["user"]
+    activities = d_freq["activity"]
+    frequencies = d_freq["frequency"]
+    for i in range(len(users)):
+        user = users[i]
+        activity = activities[i]
+        frequency = frequencies[i]
+        if user in d_activity.keys():
+            d_activity[user][activity] = frequency
+        else:
+            d_activity[user] = {activity: frequency}
+    df_freq = pd.DataFrame(d_activity).transpose()
+    cols_to_keep = []
+    for col in df_freq.columns:
+        if df_freq[col].count()>100:
+            cols_to_keep.append(col)
+    df_freq = df_freq[cols_to_keep]
+    df_freq = df_freq.dropna()
+    return df_freq
