@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plotly.offline as py
 import plotly.graph_objs as go
+import matplotlib.patches as mpatches
 
 def create_dictionnaries(file_path):
     with open(file_path) as json_data:
@@ -55,7 +56,6 @@ def number_of_connexions_per_day(ID, file_path, es = None):
             index_day += 1
     return connexion_days
 
-
 def plot_connexion(ID, file_path, es=None):
     '''
     :param ID:
@@ -107,9 +107,14 @@ def plot_connexion_global(file_path):
     :return: a plot of the normalized number of connexions per day since first day of connexion
     '''
     connexion_days = number_of_connexions_per_day_global(file_path)
-    X = np.arange(len(connexion_days))
+    days_since_discovery = len(connexion_days)
+    mean = [np.mean(connexion_days)]*days_since_discovery
+    X = np.arange(days_since_discovery)
     plt.plot(X,connexion_days, color = 'turquoise')
-    plt.ylabel("Number of connexions")
+    plt.plot(X,mean, color = 'red')
+    red_patch = mpatches.Patch(color='red', label='Mean number of connections')
+    plt.legend(handles=[red_patch])
+    plt.ylabel("Number of connections")
     plt.xlabel("Number of days since day 1")
     plt.show()
 
@@ -155,8 +160,8 @@ def plot_time_between_connexion(ID, file_path,es=None):
     time_between_connexion = time_between_connexions(ID,file_path,es)
     X = np.arange(len(time_between_connexion))
     plt.bar(X,time_between_connexion)
-    plt.ylabel("Time between connexions (days)")
-    plt.xlabel("Connexions")
+    plt.ylabel("Time between connections (days)")
+    plt.xlabel("Connections")
     plt.xticks(X)
     plt.show()
 
@@ -185,7 +190,7 @@ def plot_time_between_connexion_global(file_path):
     time_between_connexion = time_between_connexions_global(file_path)
     bins = [2**i for i in range(8)]
     plt.hist(time_between_connexion,bins=bins)
-    plt.xlabel("Median time between connexions (days)")
+    plt.xlabel("Median time between connections (days)")
     plt.ylabel("Users")
     plt.xscale("log")
     plt.show()
@@ -232,8 +237,8 @@ def plot_number_activities_per_connexion(ID, file_path, es=None):
     number_activities = number_activities_per_connexion(ID, file_path, es)
     X = np.arange(len(number_activities))
     plt.bar(X,number_activities)
-    plt.ylabel("Number of activities per connexion")
-    plt.xlabel("Connexions")
+    plt.ylabel("Number of activities per connection")
+    plt.xlabel("Connections")
     plt.xticks(X)
     plt.show()
 
@@ -260,7 +265,7 @@ def plot_number_activities_per_connexion_global(file_path, es = None, su=None):
     nb = number_activities_per_connexion_global(file_path,es,su)
     plt.hist(nb)
     plt.ylabel("Users")
-    plt.xlabel("Mean number of activities per connexion")
+    plt.xlabel("Mean number of activities per connection")
     plt.show()
 
 

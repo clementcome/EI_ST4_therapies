@@ -45,9 +45,9 @@ data = 'data/data_activity.json'
 # mean_time_between_connexions_global(data)
 
 
-
+# plot_connexion(ID, data, es=None)
 # plot_connexion_global(data)
 # plot_time_between_connexion(ID, data)
-# plot_time_between_connexion_global(data)
-plot_number_activities_per_connexion_global(data)
+plot_time_between_connexion_global(data)
+# plot_number_activities_per_connexion_global(data)
 # print(number_activities_per_connexion(ID, data))
