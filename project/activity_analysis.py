@@ -5,13 +5,13 @@ import plotly.offline as py
 import plotly.graph_objs as go
 
 
-def mean_time_between_connexions(ID,file):
+def mean_time_between_connexions(ID,file_path):
     '''
     :param ID: user_key
-    :param file: file with data
+    :param file_path
     :return:
     '''
-    with open(file) as json_data:
+    with open(file_path) as json_data:
         data = json.load(json_data)
         es = data["es"]
     date_activities_completed = []
@@ -39,13 +39,13 @@ def mean_time_between_connexions(ID,file):
     return np.mean(time_between_connexions)
 
 
-def mean_time_between_connexions_test(ID,file):
+def mean_time_between_connexions_test(ID,file_path):
     '''
     :param ID: user_key
-    :param file: file with data
+    :param file_path: file with data
     :return:
     '''
-    with open(file) as json_data:
+    with open(file_path) as json_data:
         data = json.load(json_data)
         es = data["es"]
     date_activities_completed = []
@@ -80,17 +80,17 @@ def mean_time_between_connexions_test(ID,file):
     return np.mean(time_between_connexions)
 
 
-def mean_time_connexions(file):
+def mean_time_connexions(file_path):
     '''
-    :param file: file with data
+    :param file_path: file with data
     :return:
     '''
-    with open(file) as json_data:
+    with open(file_path) as json_data:
         data = json.load(json_data)
         su = data["su"]
     means = []
     for ID in su.keys():
-        m = mean_time_between_connexions_test(ID,file)
+        m = mean_time_between_connexions_test(ID,file_path)
         if m != 0 :
             means.append(m)
     X = np.arange(len(means))
@@ -102,17 +102,17 @@ def mean_time_connexions(file):
     plt.show()
 
 
-def mean_time_between_connexions_global(file):
+def mean_time_between_connexions_global(file_path):
     '''
-    :param file: file with data
+    :param file_path: file with data
     :return: plot a histogram
     '''
-    with open(file) as json_data:
+    with open(file_path) as json_data:
         data = json.load(json_data)
         su = data["su"]
     means = []
     for ID in su.keys():
-        m = mean_time_between_connexions_test(ID,file)
+        m = mean_time_between_connexions_test(ID,file_path)
         if m != 0 :
             means.append(m)
     plt.title('Fréquence de connexion inférieure au temps préconisé ', fontsize=10)
@@ -122,13 +122,13 @@ def mean_time_between_connexions_global(file):
     plt.show()
 
 
-def connexions_date(ID,file):
+def connexions_date(ID,file_path):
     '''
     :param ID: user_key
-    :param file: file with data
+    :param file_path: file with data
     :return: list with data time
     '''
-    with open(file) as json_data:
+    with open(file_path) as json_data:
         data = json.load(json_data)
         es = data["es"]
     date_activities_completed = []
@@ -162,8 +162,8 @@ def connexions_date(ID,file):
     return connexion_days
 
 
-def plot_connexion(ID, file):
-    connexion_days = connexions_date(ID,file)
+def plot_connexion(ID, file_path):
+    connexion_days = connexions_date(ID,file_path)
     X = np.arange(len(connexion_days))
     plt.plot(X,connexion_days, color='turquoise')
     plt.ylabel("Number of connexions")
@@ -172,13 +172,13 @@ def plot_connexion(ID, file):
     plt.show()
 
 
-def number_activities_connexion(ID, file):
+def number_activities_connexion(ID, file_path):
     '''
     :param ID:
-    :param file:
+    :param file_path:
     :return: a list of list such that len(list) = number of connexions and list[i] = number of activities of connexion [i]
     '''
-    with open(file) as json_data:
+    with open(file_path) as json_data:
         data = json.load(json_data)
         es = data["es"]
     date_activities_completed = []
@@ -212,13 +212,13 @@ def number_activities_connexion(ID, file):
     return connexion_days
 
 
-def frequency_activity(ID, data):
+def frequency_activity(ID, file):
     '''
     :param ID:
-    :param data:
+    :param file:
     :return:
     '''
-    with open(data) as json_data:
+    with open(file) as json_data:
         data = json.load(json_data)
         es = data["es"]
 
@@ -271,9 +271,11 @@ def number_activity_per_connexion_global(file_path):
     for ID in su.keys():
         nb = number_activity_per_connexion(ID,file_path)
         nb_activity.append(nb)
-    plt.title("Nombre d'activités par connexion", fontsize=10)
+    # plt.title("Nombre d'activités par connexion", fontsize=10)
     plt.xlabel("Nombre d'activités")
     plt.ylabel("Nombre d'utilisateurs")
     plt.hist(nb_activity)
     plt.show()
+
+
 
