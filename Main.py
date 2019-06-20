@@ -15,7 +15,8 @@ from project.second_analysis import number_of_connexions_per_day_global
 from project.second_analysis import plot_connexion_global
 from project.second_analysis import plot_time_between_connexion
 from project.second_analysis import plot_time_between_connexion_global
-
+from project.second_analysis import plot_number_activities_per_connexion_global
+from project.second_analysis import number_activities_per_connexion
 
 
 # d_activities, count_error = list_activities()
@@ -47,5 +48,6 @@ data = 'data/data_activity.json'
 
 # plot_connexion_global(data)
 # plot_time_between_connexion(ID, data)
-plot_time_between_connexion_global(data)
-
+# plot_time_between_connexion_global(data)
+plot_number_activities_per_connexion_global(data)
+# print(number_activities_per_connexion(ID, data))

@@ -11,13 +11,14 @@ def create_dictionnaries(file_path):
         su = data["su"]
     return (es,su)
 
-def number_of_connexions_per_day(ID, file_path):
+def number_of_connexions_per_day(ID, file_path, es = None):
     '''
     :param ID: user_key
     :param file_path
     :return: list with the number of connexions each day since the first use of Diapason
     '''
-    es = create_dictionnaries(file_path)[0]
+    if es == None:
+        es = create_dictionnaries(file_path)[0]
     date_activities_completed = []
     for event in es:
         if es[event]["userKey"] == ID :
@@ -55,13 +56,13 @@ def number_of_connexions_per_day(ID, file_path):
     return connexion_days
 
 
-def plot_connexion(ID, file_path):
+def plot_connexion(ID, file_path, es=None):
     '''
     :param ID:
     :param file_path:
     :return: a plot of the number of connexions per day of ID
     '''
-    connexion_days = number_of_connexions_per_day(ID,file_path)
+    connexion_days = number_of_connexions_per_day(ID,file_path,es)
     X = np.arange(len(connexion_days))
     plt.plot(X,connexion_days, color = 'turquoise')
     plt.ylabel("Number of connexions")
@@ -76,15 +77,16 @@ def maximum_length_dictionnary(dict):
             max = len(value)
     return max
 
-def number_of_connexions_per_day_global(file_path):
+def number_of_connexions_per_day_global(file_path,es=None,su=None):
     '''
     :param file_path:
     :return: list with the normalized number of connexions per day of each user from the first day of connexion
     '''
-    (es, su) = create_dictionnaries(file_path)
+    if es == None or su == None:
+        (es, su) = create_dictionnaries(file_path)
     connexions_per_day = {}
     for ID in su.keys():
-        nb = number_of_connexions_per_day(ID,file_path)
+        nb = number_of_connexions_per_day(ID,file_path,es)
         if not nb == [] :
             connexions_per_day[ID] = nb
     max_seniority = maximum_length_dictionnary(connexions_per_day)
@@ -112,13 +114,14 @@ def plot_connexion_global(file_path):
     plt.show()
 
 
-def time_between_connexions(ID,file_path):
+def time_between_connexions(ID,file_path,es=None):
     '''
     :param ID: user_key
     :param file_path
     :return: a list of the time in hour elapsed between successive connexions of ID
     '''
-    es = create_dictionnaries(file_path)[0]
+    if es == None:
+        es = create_dictionnaries(file_path)[0]
     date_activities_completed = []
     for event in es:
         if es[event]["userKey"] == ID :
@@ -143,13 +146,13 @@ def time_between_connexions(ID,file_path):
         time_between_connexions.append(delta//(3600*24))
     return time_between_connexions
 
-def plot_time_between_connexion(ID, file_path):
+def plot_time_between_connexion(ID, file_path,es=None):
     '''
     :param ID
     :param file_path
     :return: a plot of the time between two connexions
     '''
-    time_between_connexion = time_between_connexions(ID,file_path)
+    time_between_connexion = time_between_connexions(ID,file_path,es)
     X = np.arange(len(time_between_connexion))
     plt.bar(X,time_between_connexion)
     plt.ylabel("Time between connexions (days)")
@@ -158,15 +161,16 @@ def plot_time_between_connexion(ID, file_path):
     plt.show()
 
 
-def time_between_connexions_global(file_path):
+def time_between_connexions_global(file_path, es=None, su=None):
     '''
     :param file_path
     :return: a list of the time in hour elapsed between successive connexions of ID
     '''
     median_times = []
-    (es, su) = create_dictionnaries(file_path)
+    if es == None or su == None:
+        (es, su) = create_dictionnaries(file_path)
     for ID in su.keys():
-        time = time_between_connexions(ID,file_path)
+        time = time_between_connexions(ID,file_path,es)
         if not time == []:
             median = np.median(time)
             median_times.append(median)
@@ -176,23 +180,25 @@ def time_between_connexions_global(file_path):
 def plot_time_between_connexion_global(file_path):
     '''
     :param file_path
-    :return: a plot of the median time between connexions
+    :return: a plot of the median times between connexions
     '''
     time_between_connexion = time_between_connexions_global(file_path)
-    X = np.arange(len(time_between_connexion))
-    plt.bar(X,time_between_connexion)
-    plt.ylabel("Median time between connexions (days)")
-    plt.xlabel("Connexions")
-    plt.xticks(X)
+    bins = [2**i for i in range(8)]
+    plt.hist(time_between_connexion,bins=bins)
+    plt.xlabel("Median time between connexions (days)")
+    plt.ylabel("Users")
+    plt.xscale("log")
     plt.show()
 
-def number_activities_per_connexion(ID, file_path):
+
+def number_activities_per_connexion(ID, file_path,es=None):
     '''
     :param ID: user_key
-    :param file: file with data
-    :return:
+    :param file_path
+    :return: a list with the number of activities per connexion
     '''
-    es = create_dictionnaries(file_path)[0]
+    if es == None:
+        es = create_dictionnaries(file_path)[0]
     date_activities_completed = []
     for event in es:
         if es[event]["userKey"] == ID :
@@ -217,8 +223,46 @@ def number_activities_per_connexion(ID, file_path):
     return number_activities_per_connexion
 
 
+def plot_number_activities_per_connexion(ID, file_path, es=None):
+    '''
+    :param ID: user key
+    :param file_path
+    :return: plot the number of activities per connexion
+    '''
+    number_activities = number_activities_per_connexion(ID, file_path, es)
+    X = np.arange(len(number_activities))
+    plt.bar(X,number_activities)
+    plt.ylabel("Number of activities per connexion")
+    plt.xlabel("Connexions")
+    plt.xticks(X)
+    plt.show()
 
-# def frequency_activity(ID, file):
+def number_activities_per_connexion_global(file_path, es=None, su=None):
+    '''
+    :param file_path
+    :return: a list with the mean number of activities per connexion for each user
+    '''
+    if es == None or su == None:
+        (es, su) = create_dictionnaries(file_path)
+    mean_numbers = []
+    for ID in su :
+        nb = number_activities_per_connexion(ID, file_path, es)
+        if not nb == []:
+            mean = np.mean(nb)
+            mean_numbers.append(mean)
+    return(mean_numbers)
+
+def plot_number_activities_per_connexion_global(file_path, es = None, su=None):
+    '''
+    :param file_path:
+    :return: a plot of the number of activities per connexion for each user
+    '''
+    nb = number_activities_per_connexion_global(file_path,es,su)
+    plt.hist(nb)
+    plt.ylabel("Users")
+    plt.xlabel("Mean number of activities per connexion")
+    plt.show()
+
 
 
 
