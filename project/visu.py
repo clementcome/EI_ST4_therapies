@@ -175,10 +175,8 @@ def programs_status(file="data/des.json"):
    color='r',
    label='COMPLETE')
 
-   plt.xlabel('Programme')
    plt.ylabel('Nombre d'+"'"+'utilisateurs')
-   plt.title('Utilisation des programmes')
-   plt.xticks(index + bar_width, ('improveMood', 'reduceStress', 'improveConcentration', 'improveSleep'))
+   plt.xticks(index + bar_width, ('Improve Mood', 'Reduce Stress', 'Improve Concentration', 'Improve Sleep'))
    plt.legend()
 
    plt.tight_layout()

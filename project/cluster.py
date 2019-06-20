@@ -77,7 +77,7 @@ def pca_kmeans_users(frequency_filepath="data/data_frequency.json"):
     #     y=users_2[:,1],
     #     mode = "markers"
     # )]
-    kmeans = KMeans(n_clusters=3).fit(df_freq)
+    kmeans = KMeans(n_clusters=2).fit(df_freq)
     labels = kmeans.labels_
     activity_2 = pd.DataFrame({"PCA1":users_2[:,0], "PCA2":users_2[:,1],
             "labels":labels},
@@ -102,7 +102,7 @@ def tsne_kmeans_users(frequency_filepath="data/data_frequency.json"):
     #     y=users_2[:,1],
     #     mode = "markers"
     # )]
-    kmeans = KMeans(n_clusters=1).fit(df_freq)
+    kmeans = KMeans(n_clusters=2).fit(df_freq)
     labels = kmeans.labels_
     activity_2 = pd.DataFrame({"PCA1":users_2[:,0], "PCA2":users_2[:,1],
             "labels":labels},

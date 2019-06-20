@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 from datetime import datetime
+from datetime import date
 
 def extract_activity_data(des_path="data/des.json",dsu_path="data/dsu.json",ouput_path="data/data_activity.json"):
     d_activity = {}
@@ -110,7 +111,8 @@ def frequencies_from_dataframe(df):
         timestamps = df["time"].iloc[start:end]
         d_days = dict_days_activity(timestamps)
         try:
-            max_day = max(d_days.keys())
+            # max_day = max(d_days.keys())
+            max_day = date(2019,6,14)
             min_day = min(d_days.keys())
             if max_day != min_day:
                 mean = sum(d_days.values())/(max_day-min_day).days
