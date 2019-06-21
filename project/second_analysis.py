@@ -64,9 +64,9 @@ def plot_connexion(ID, file_path, es=None):
     '''
     connexion_days = number_of_connexions_per_day(ID,file_path,es)
     X = np.arange(len(connexion_days))
-    plt.plot(X,connexion_days, color = 'turquoise')
-    plt.ylabel("Number of connexions")
-    plt.xlabel("Number of days")
+    plt.plot(X,connexion_days, color = 'orange',linewidth=2.5)
+    plt.ylabel("Number of connexions", fontsize=12)
+    plt.xlabel("Number of days", fontsize=12)
     # plt.title("Number of connexions per day since first connexion of {}".format(ID))
     plt.show()
 
@@ -112,8 +112,10 @@ def plot_connexion_global(file_path):
     X = np.arange(days_since_discovery)
     plt.plot(X,connexion_days, color = 'turquoise')
     plt.plot(X,mean, color = 'red')
-    red_patch = mpatches.Patch(color='red', label='Mean number of connections')
+    red_patch = mpatches.Patch(color='red', label='Mean number of connections : {}'.format(round(np.mean(connexion_days),3)))
     plt.legend(handles=[red_patch])
+    #plt.ylabel("Number of connections", fontsize = 8)
+    #plt.xlabel("Number of days since day 1", fontsize = 8)
     plt.ylabel("Number of connections")
     plt.xlabel("Number of days since day 1")
     plt.show()
@@ -256,6 +258,7 @@ def number_activities_per_connexion_global(file_path, es=None, su=None):
             mean = np.mean(nb)
             mean_numbers.append(mean)
     return(mean_numbers)
+
 
 def plot_number_activities_per_connexion_global(file_path, es = None, su=None):
     '''
