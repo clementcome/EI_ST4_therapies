@@ -2,7 +2,7 @@ data/des.json
 data/dsu.json
 data/duserdate.json
 essai.py
-__pycache__
+__pycache__/
 
 data/
 __pycache__
@@ -11,3 +11,5 @@ __pycache__
 .ipynb_checkpoints/
 Notebook_EI.ipynb
 visualizations/
+*.ipynb
+.ipynb_checkpoints/
