@@ -39,7 +39,7 @@ from project.cluster import pca_kmeans_activities, pca_therapy_activities, pca_k
 # use_frequencies()
 
 
-from dash_app import app_therapy,app_activity
+# from dash_app import app_therapy,app_activity
 
 # app_therapy.run_server(debug=True)
-app_activity.run_server(debug=True)
+# app_activity.run_server(debug=True)

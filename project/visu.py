@@ -83,7 +83,8 @@ def display_therapy_used(therapy_path = "data/therapyByUser.json"):
         y = [d_count[activity] for activity in x]
         trace = go.Bar(x=x,y=y,name=therapy)
         data.append(trace)
-    py.plot(data)
+    layout = go.Layout(xaxis={"tickfont":{"size":15}},height=600)
+    py.plot({"data":data,"layout":layout})
 
 def display_therapy_per_user_3d(therapy_filepath="data/therapyByUser.json"):
     therapies = ["trt","cbt","relaxation"]
@@ -121,7 +122,8 @@ def display_corr_principal_users(frequency_path="data/data_frequency.json"):
     corr = df.corr()
     # corr.style.background_gradient(cmap="coolwarm",axis=None)
     data = [go.Heatmap(z=corr,x=corr.columns,y=corr.index)]
-    layout = go.Layout(title="Matrice de corrélation des utilisateurs en fonction de leurs utilisations des activités")
+    layout = go.Layout(xaxis={"showticklabels":False},yaxis={"showticklabels":False},
+        width=700,height=700)
     py.plot({"data":data,"layout":layout})
 
 #des[type] = “PROGRAM_” + START, CANCEL, COMPLETE + (des[data][referrer][program] + des[data][referrer][type] where des[type] = “ACTIVITY_START”)

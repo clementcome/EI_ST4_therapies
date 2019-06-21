@@ -155,7 +155,7 @@ def dataframe_activity_frequency(frequency_path="data/data_frequency.json"):
     df_freq = pd.DataFrame(d_activity).transpose()
     cols_to_keep = []
     for col in df_freq.columns:
-        if df_freq[col].count()>100:
+        if df_freq[col].count()>150:
             cols_to_keep.append(col)
     df_freq = df_freq[cols_to_keep]
     df_freq = df_freq.dropna()
