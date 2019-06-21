@@ -1,9 +1,38 @@
 import json
 import pandas as pd
+import numpy as np
 from datetime import datetime
 from datetime import date
 
-def extract_activity_data(des_path="data/des.json",dsu_path="data/dsu.json",ouput_path="data/data_activity.json"):
+
+def get_trajectories_acouphenometry(file="data/des.json"):
+    """
+    Saves all the trajectories of acouphenometry from event sourcing
+    in a file named dtrajectories.json
+    """
+    with open(file) as input_file:
+        data =json.load(input_file)
+    d_trajectories = {}
+    for key in data.keys():
+        try:
+            activity = data[key]["data"]["activity"]
+            if activity == "acouphenometry":
+                d_trajectories[data[key]["userKey"]] = data[key]["data"]["points"]
+        except:
+            pass
+    with open("data/dtrajectories.json","w") as output_file:
+        json.dump(d_trajectories,output_file)
+
+def extract_activity_data(des_path="data/des.json",
+    dsu_path="data/dsu.json",
+    ouput_path="data/data_activity.json"):
+    """
+    Script to extract our interesting data from event sourcing and strong users
+    Dumps dictionary into output_path
+    Dictionary structure is : {"su":{userKey:{"reducers":{"user":{subscriptionDate}}}},
+        "es":{eventKey:{"score":,
+            "data":{"activity":activity,"duration":duration,"gameScore":gameScore,"uuid":uuid,"referrer":referrer}}}}
+    """
     d_activity = {}
     with open(dsu_path) as input_file:
         d_users = json.load(input_file)
@@ -49,7 +78,86 @@ def extract_activity_data(des_path="data/des.json",dsu_path="data/dsu.json",oupu
     with open(ouput_path,'w') as output_file:
         json.dump(d_activity,output_file)
 
+
+def therapy_from_activity(activities_path = "data/activities.json"):
+    """
+    Returns a dictionary with activity as keys and therapy as values
+    """
+    with open(activities_path) as input_file:
+        activities = json.load(input_file)
+    d_therapy = {}
+    for therapy in activities:
+        for activity in activities[therapy]:
+            d_therapy[activity["name"]] = therapy
+    return d_therapy
+
+def therapy_analysis(data_activity_path = "data/data_activity.json",
+    activities_path = "data/activities.json",
+    output_path = "data/therapyByUser.json"):
+    """
+    Create a json file with this format : {user:{therapyName:{activity:[date]}}}
+    Keeps only the activities not done during the guided tour.
+    """
+    with open(data_activity_path) as data_activity_file:
+        data_activity = json.load(data_activity_file)
+    es = data_activity["es"]
+    su = data_activity["su"]
+    li_su = list(su.keys())
+    therapy_activity = therapy_from_activity()
+    therapies = set(therapy_activity.values())
+    data_user = {}      # a first dictionary to get all the activities done by a user
+    data_therapy = {}
+    events_by_uuid = {}
+    for eventKey in es:
+        event = es[eventKey]
+        if "userKey" in event.keys():
+            if event["userKey"] not in li_su:
+                continue
+        if "type" in event.keys():
+            if "ACTIVITY" in event["type"]:
+                if "uuid" in event["data"].keys():
+                    uuid = event["data"]["uuid"]
+                    if uuid in events_by_uuid.keys():
+                        events_by_uuid[uuid][event["type"]] = event
+                    else:
+                        events_by_uuid[uuid] = {event["type"]: event}
+    for uuid in events_by_uuid:
+        events = events_by_uuid[uuid]
+        if "ACTIVITY_START" in events.keys():
+            start_event = events["ACTIVITY_START"]
+            if "referrer" in start_event["data"].keys():
+                referrer = start_event["data"]["referrer"]
+                if "name" in referrer.keys() and referrer["name"] == "guidedTour":
+                    continue
+                if "ACTIVITY_COMPLETE" in events.keys():
+                    event = events["ACTIVITY_COMPLETE"]
+                    if "userKey" in event.keys():
+                        userKey = event["userKey"]
+                        if "activity" in event["data"].keys():
+                            acti = {"activity":event["data"]["activity"],"date":event["date"]}
+                            if userKey in data_user.keys():
+                                data_user[userKey].append(acti)
+                            else:
+                                data_user[userKey] = [acti]
+    for user in data_user:
+        data_therapy[user] = {therapy :{} for therapy in therapies}
+        for acti in data_user[user]:
+            acti_name = acti["activity"]
+            acti_date = acti["date"]
+            if acti_name in therapy_activity.keys():
+                therapy = therapy_activity[acti_name]
+                if acti_name in data_therapy[user][therapy].keys():
+                    data_therapy[user][therapy][acti_name].append(acti_date)
+                else:
+                    data_therapy[user][therapy][acti_name] = [acti_date]
+    with open(output_path,'w') as output_file:
+        json.dump(data_therapy,output_file)
+
+
 def dataframe_from_therapy(therapy_path="data/therapyByUser.json"):
+    """
+    Returns a pandas DataFrame with user, therapy, activity and time as columns
+    """
     d_therapy = json.load(open("data/therapyByUser.json"))
     data_activity = {"user":[],"therapy":[],"activity":[],"time":[]}
     for userKey in d_therapy:
@@ -100,7 +208,7 @@ def dict_days_activity(timestamps):
 
 def frequencies_from_dataframe(df):
     """
-    Return frequencies associated to each activity and user difference with the previous one is
+    Returns frequencies associated to each activity and user difference with the previous one is
     we count for each day how many times a user did each activity
     returns dict: keys are row indices and values are median frequencies
     """
@@ -123,7 +231,7 @@ def frequencies_from_dataframe(df):
 
 def use_frequencies(df= dataframe_from_therapy(),ouput_path="data/data_frequency.json"):
     """
-    Return a dataframe giving frequencies by activity, therapy and user
+    Returns a dataframe giving frequencies by activity, therapy and user
     """
     d_frequency_row = frequencies_from_dataframe(df)
     d_frequency = {"user":[],"therapy":[],"activity":[],"frequency":[]}
@@ -139,6 +247,9 @@ def use_frequencies(df= dataframe_from_therapy(),ouput_path="data/data_frequency
     return df_frequency
 
 def dataframe_activity_frequency(frequency_path="data/data_frequency.json"):
+    """
+    Returns a dataframe with userKey as indices and name of activities as columns
+    """
     d_freq = json.load(open(frequency_path))
     d_activity = {}
     users = d_freq["user"]

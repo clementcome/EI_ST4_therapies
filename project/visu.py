@@ -2,15 +2,18 @@ import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.offline as py
 import plotly.graph_objs as go
 
 from project.explore import get_1_acouphenometry
-from project.activity_analysis import therapy_from_activity
+from project.extract import therapy_from_activity
 from project.extract import dataframe_activity_frequency
 
 def display_1_acouphenometry():
+    """
+    DEPRECATED
+    Display the trajectory of the first acouphenometry in event sourcing
+    """
     data_acouphenometry = get_1_acouphenometry()
     points = data_acouphenometry["data"]["points"]
     f = [point["f"] for point in points]
@@ -40,6 +43,10 @@ def display_trajectory(i=1,file = "data/dtrajectories.json"):
     plt.show()
 
 def display_therapy(i=0, therapy_path = "data/therapyByUser.json"):
+    """
+    Display the use of activities (number of activities completed) for a user given by its line number
+    Colors the bars depending on their therapy
+    """
     with open(therapy_path) as input_file:
         d_therapy = json.load(input_file)
     user = list(d_therapy.keys())[i]
@@ -56,6 +63,10 @@ def display_therapy(i=0, therapy_path = "data/therapyByUser.json"):
     py.plot(data)
 
 def display_therapy_used(therapy_path = "data/therapyByUser.json"):
+    """
+    Display the use of activities (number of activities completed) for every user given by its line number
+    Colors the bars depending on their therapy
+    """
     with open(therapy_path) as input_file:
         d_therapy = json.load(input_file)
     activity_therapy = therapy_from_activity()
@@ -87,6 +98,9 @@ def display_therapy_used(therapy_path = "data/therapyByUser.json"):
     py.plot({"data":data,"layout":layout})
 
 def display_therapy_per_user_3d(therapy_filepath="data/therapyByUser.json"):
+    """
+    Display the use of therapies for every user in 3D
+    """
     therapies = ["trt","cbt","relaxation"]
     with open(therapy_filepath) as input_file:
         d_therapy = json.load(input_file)
@@ -111,6 +125,9 @@ def display_therapy_per_user_3d(therapy_filepath="data/therapyByUser.json"):
     py.plot({"data":data,"layout":layout})
 
 def display_corr_activities(frequency_path="data/data_frequency.json"):
+    """
+    Display the correlation matrix of activities described by users' use-frequency
+    """
     df = dataframe_activity_frequency()
     corr = df.corr()
     # corr.style.background_gradient(cmap="coolwarm",axis=None)
@@ -118,6 +135,9 @@ def display_corr_activities(frequency_path="data/data_frequency.json"):
     py.plot(data)
 
 def display_corr_principal_users(frequency_path="data/data_frequency.json"):
+    """
+    Display the correlation matrix of users described by activities' use-frequency
+    """
     df = dataframe_activity_frequency().transpose()
     corr = df.corr()
     # corr.style.background_gradient(cmap="coolwarm",axis=None)
@@ -128,58 +148,61 @@ def display_corr_principal_users(frequency_path="data/data_frequency.json"):
 
 #des[type] = “PROGRAM_” + START, CANCEL, COMPLETE + (des[data][referrer][program] + des[data][referrer][type] where des[type] = “ACTIVITY_START”)
 def programs_status(file="data/des.json"):
-   with open(file) as input_file:
-       data = json.load(input_file)
-   comptage={}
-   programmes = ["improveMood", "reduceStress", "improveConcentration", "improveSleep"]
-   types = ['PROGRAM_START', 'PROGRAM_CANCEL', 'PROGRAM_COMPLETE']
-   comptage['PROGRAM_START'] = {}
-   comptage['PROGRAM_CANCEL'] = {}
-   comptage['PROGRAM_COMPLETE'] = {}
+    """
+    Display the proportion of program started completed and cancelled for every program
+    """
+    with open(file) as input_file:
+        data = json.load(input_file)
+    comptage={}
+    programmes = ["improveMood", "reduceStress", "improveConcentration", "improveSleep"]
+    types = ['PROGRAM_START', 'PROGRAM_CANCEL', 'PROGRAM_COMPLETE']
+    comptage['PROGRAM_START'] = {}
+    comptage['PROGRAM_CANCEL'] = {}
+    comptage['PROGRAM_COMPLETE'] = {}
 
-   for programme in programmes :
-       comptage['PROGRAM_START'][programme]=0
-       comptage['PROGRAM_CANCEL'][programme]=0
-       comptage['PROGRAM_COMPLETE'][programme]=0
+    for programme in programmes :
+        comptage['PROGRAM_START'][programme]=0
+        comptage['PROGRAM_CANCEL'][programme]=0
+        comptage['PROGRAM_COMPLETE'][programme]=0
 
-   for utilisateur in data.keys():
-       #print(data[utilisateur])
-       try:
-           prog = data[utilisateur]["data"]["program"]
-           type = data[utilisateur]["type"]
-           if type in types and prog in programmes:
-               comptage[type][prog] += 1
+    for utilisateur in data.keys():
+        #print(data[utilisateur])
+        try:
+            prog = data[utilisateur]["data"]["program"]
+            type = data[utilisateur]["type"]
+            if type in types and prog in programmes:
+                comptage[type][prog] += 1
 
-       except KeyError:
-           pass
-   valStart = [comptage['PROGRAM_START'][i] for i in programmes]
-   valCancel = [comptage['PROGRAM_CANCEL'][i] for i in programmes]
-   valComplete = [comptage['PROGRAM_COMPLETE'][i] for i in programmes]
+        except KeyError:
+            pass
+    valStart = [comptage['PROGRAM_START'][i] for i in programmes]
+    valCancel = [comptage['PROGRAM_CANCEL'][i] for i in programmes]
+    valComplete = [comptage['PROGRAM_COMPLETE'][i] for i in programmes]
 
-   # create plot
-   fig, ax = plt.subplots()
-   index = np.arange(4)
-   bar_width = 0.25
-   opacity = 0.8
+    # create plot
+    fig, ax = plt.subplots()
+    index = np.arange(4)
+    bar_width = 0.25
+    opacity = 0.8
 
-   rects1 = plt.bar(index, valStart, bar_width,
-   alpha=opacity,
-   color='b',
-   label='START')
+    rects1 = plt.bar(index, valStart, bar_width,
+    alpha=opacity,
+    color='b',
+    label='START')
 
-   rects2 = plt.bar(index + bar_width, valCancel, bar_width,
-   alpha=opacity,
-   color='g',
-   label='CANCEL')
+    rects2 = plt.bar(index + bar_width, valCancel, bar_width,
+    alpha=opacity,
+    color='g',
+    label='CANCEL')
 
-   rects3 = plt.bar(index + bar_width*2, valComplete, bar_width,
-   alpha=opacity,
-   color='r',
-   label='COMPLETE')
+    rects3 = plt.bar(index + bar_width*2, valComplete, bar_width,
+    alpha=opacity,
+    color='r',
+    label='COMPLETE')
 
-   plt.ylabel('Nombre d'+"'"+'utilisateurs')
-   plt.xticks(index + bar_width, ('Improve Mood', 'Reduce Stress', 'Improve Concentration', 'Improve Sleep'))
-   plt.legend()
+    plt.ylabel('Nombre d'+"'"+'utilisateurs')
+    plt.xticks(index + bar_width, ('Improve Mood', 'Reduce Stress', 'Improve Concentration', 'Improve Sleep'))
+    plt.legend()
 
-   plt.tight_layout()
-   plt.show()
+    plt.tight_layout()
+    plt.show()

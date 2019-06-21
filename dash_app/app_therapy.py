@@ -1,3 +1,6 @@
+"""Visualize the use of therapies in 3D counting the number of activities in each
+therapies for each user"""
+
 import json
 import dash
 import dash_html_components as html
@@ -64,9 +67,7 @@ def update_figure(selected_x,selected_y,selected_z):
     x = [d_count[user][selected_x] for user in d_count]
     y = [d_count[user][selected_y] for user in d_count]
     z = [d_count[user][selected_z] for user in d_count]
-    data = [
-        go.Scatter3d(x=x,y=y,z=z,mode="markers")
-    ]
+
     layout = go.Layout(height=700,scene={
         "xaxis":{"title":therapies[selected_x],"type":"log"},
         "yaxis":{"title":therapies[selected_y],"type":"log"},

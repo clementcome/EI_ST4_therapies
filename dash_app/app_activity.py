@@ -1,3 +1,8 @@
+"""
+Visualize the use of activities :
+Compare for 2 activities the frequency of use of all users
+"""
+
 import json
 import pandas as pd
 import dash
@@ -81,13 +86,13 @@ def update_graph(selected_x,selected_y,scale_values):
     x = df_frequency[df_frequency["activity"] == selected_x]["frequency"]
     y = df_frequency[df_frequency["activity"] == selected_y]["frequency"]
 
-    # droite = go.Scatter(x=[1,200],y=[1,200],mode="lines")
+    droite = go.Scatter(x=[0,3],y=[0,3],mode="lines")
     # for user in d_count:
     #     if (selected_x in d_count[user].keys()) and (selected_y in d_count[user].keys()):
     #         x.append(d_count[user][selected_x])
     #         y.append(d_count[user][selected_y])
 
-    data = [go.Scatter(x=x,y=y,mode="markers")]
+    data = [go.Scatter(x=x,y=y,mode="markers"),droite]
     layout = go.Layout(height=700,xaxis={"title":activities[selected_x]},
         yaxis={"title":activities[selected_y], "scaleanchor":"x"})
     if "log" in scale_values:
