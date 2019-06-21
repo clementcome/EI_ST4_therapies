@@ -10,3 +10,5 @@ For many visualizations we use a (wonderful) package called plotly that must be 
 For clustering and PCA we use scikit-learn `pip install scikit-learn`.
 For interactive dash apps we use the package dash `pip install dash`
 Other packages are more common : matplotlib, pandas, numpy, json, datetime
+
+__Collaborators :__ Anne Baril, Clément Côme, Maxime Culot, Foucauld d'Hérouville
